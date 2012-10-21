@@ -1,0 +1,138 @@
+<!doctype html>
+<html>
+	<head>
+		<script type="text/javascript" src="js/jquery-1.8.2.js"></script>
+
+		<script type="text/javascript">
+
+		/**
+			THE BASIC IDEA HERE IS TO HAVE A LINE GRAPH IN REVERSE ORDER
+
+				TODO:
+					- Add hoverstate on points which outputs values.
+					- Change colour per X axis.
+				KNOWN BUGS:
+					- Top Y axis value is off the canvas.
+		**/
+			var graph;
+			var xPadding = 40;
+			var yPadding = 50;
+			 
+			var data = { values:[
+			        { X: "Jan", Y: 8 },
+			        { X: "Feb", Y: 2 },
+			        { X: "Mar", Y: 12 },
+			        { X: "Apr", Y: 14 },
+			        { X: "May", Y: 10 },
+			        { X: "Jun", Y: 20 },
+			        { X: "Jul", Y: 10 },
+			        { X: "Aug", Y: 1 },
+			]};
+			//console.log('length: '+data.values.length)
+			function getMaxY() {
+		    var max = 0;
+		     
+		    for(var i = 0; i < data.values.length; i ++) {
+		        if(data.values[i].Y > max) {
+		            max = data.values[i].Y;
+		        }
+		    }
+		    //console.log(max);
+		     
+		    max += (10 - max) % 10;
+		    return max;
+		}
+			function getMinY() {
+		    var max = 0;
+		     
+		    for(var i = 0; i < data.values.length; i ++) {
+		        if(data.values[i].Y < max) {
+		            max = data.values[i].Y;
+		        }
+		    }
+		    //console.log(max);
+		     
+		    max += (10 - max) % 10;
+		    return max;
+		}
+		//console.log(getMaxY());
+		    //console.log(10+10 - 10 % 10);
+		 
+		function getXPixel(val) {
+			return ((graph.width() - xPadding) / data.values.length) * val + (xPadding * 1.5);
+		}
+		 
+		function getYPixel(val) {
+			return graph.height() - (((graph.height() - yPadding) / getMaxY()) * val) - yPadding;
+		}
+
+
+		$(document).ready(function() {
+    	graph = $('#line-graph');
+    	var c = graph[0].getContext('2d');
+    	c.lineWidth = 3;
+    	c.lineJoin = "round";
+			c.strokeStyle = '#333';
+			c.font = 'italic 8pt sans-serif';
+			c.textAlign = "center";
+			c.beginPath();
+			c.moveTo(xPadding, 30);
+			c.lineTo(xPadding, graph.height() - yPadding);
+			c.lineTo(graph.width(), graph.height() - yPadding);
+			c.stroke();
+
+			for(var i = 0; i < data.values.length; i ++) {
+    		c.fillText(data.values[i].X, getXPixel(i), graph.height() - yPadding + 20);
+			}
+
+			c.textAlign = "right"
+			c.textBaseline = "middle";
+
+			var Ypoints = Math.ceil(getMaxY() / 10); // We want a max of 10 points. Evenly distrubited.
+			//console.log(getMaxY());
+			for(var i = 0; i <= getMaxY(); i += Ypoints) {
+			   c.fillText(i, xPadding - 10, getYPixel(i));
+			//	console.log('0-10: '+i);
+			}
+
+			// for(var i = 10; i >= getMinY(); i -=Ypoints){
+			//     c.fillText(i, xPadding - 10, getYPixel(i));
+			// 		//console.log('10-0: '+i);
+			// }
+			c.lineWidth = 5;
+			c.strokeStyle = '#f00';
+    	c.lineJoin = "round";
+    	c.lineCap = "round";
+			c.beginPath();
+			//c.moveTo(getXPixel(0), getYPixel(data.values[0].Y));
+			 
+			for(var i = 0; i < data.values.length; i ++) {
+			    //c.lineTo(getXPixel(i), getYPixel(data.values[i].Y));
+			}
+
+			c.fillStyle = '#333';
+ 
+			for(var i = 1; i < data.values.length; i ++) {  
+			    c.beginPath();
+			  //  c.lineTo(getXPixel(0), getYPixel(data.values[i].Y));
+
+			  c.rect( getXPixel(i), getYPixel(data.values[i].Y), 10, 750-getYPixel(data.values[i].Y));
+
+			   // c.arc(getXPixel(i), , 4, 0, Math.PI * 2, true);
+			    c.fill();
+
+			}
+		//	c.stroke();
+		});
+
+
+
+		</script>
+	</head>
+
+	<body>
+
+    <canvas id="line-graph" width="600" height="800">   
+    </canvas>
+	</body>
+</html>
