@@ -11,8 +11,6 @@
 				TODO:
 					- Add hoverstate on points which outputs values.
 					- Change colour per X axis.
-				KNOWN BUGS:
-					- Top Y axis value is off the canvas.
 		**/
 			var graph;
 			var xPadding = 40;
@@ -30,9 +28,9 @@
 			]};
 			//console.log('length: '+data.values.length)
 			function getMaxY() {
-		    var max = 0;
+		    var max = 1;
 		     
-		    for(var i = 0; i < data.values.length; i ++) {
+		    for(var i = 1; i < data.values.length; i ++) {
 		        if(data.values[i].Y > max) {
 		            max = data.values[i].Y;
 		        }
@@ -43,16 +41,17 @@
 		    return max;
 		}
 			function getMinY() {
-		    var max = 0;
+		    var max = 1;
 		     
-		    for(var i = 0; i < data.values.length; i ++) {
+		    for(var i = 1; i < data.values.length; i ++) {
 		        if(data.values[i].Y < max) {
 		            max = data.values[i].Y;
 		        }
 		    }
 		    //console.log(max);
-		     
+		     if(max != 1){
 		    max += (10 - max) % 10;
+		    }
 		    return max;
 		}
 		//console.log(getMaxY());
@@ -63,7 +62,7 @@
 		}
 		 
 		function getYPixel(val) {
-			return graph.height() - (((graph.height() - yPadding) / getMaxY()) * val) - yPadding;
+			return (graph.height() - (((graph.height() - 100) / getMaxY()) * val) - yPadding);
 		}
 
 
